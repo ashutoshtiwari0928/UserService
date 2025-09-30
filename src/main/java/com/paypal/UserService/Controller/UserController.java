@@ -1,6 +1,7 @@
 package com.paypal.UserService.Controller;
 
-import com.paypal.UserService.Entity.User;
+import com.paypal.UserService.DTO.UserDTO;
+import com.paypal.UserService.Entity.AuthUser;
 import com.paypal.UserService.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+    public ResponseEntity<UserDTO> createUser(@RequestBody AuthUser authUser){
+        return new ResponseEntity<>(userService.createUser(authUser), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
         return userService
                 .getUserById(id)
                 .map(ResponseEntity::ok)
@@ -31,8 +32,14 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
         return ResponseEntity.ok(userService.GetAllUsers());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUserById(@PathVariable Long id){
+        userService.deleteUser(id);
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 
 }

@@ -2,13 +2,11 @@ package com.paypal.UserService.Entity;
 
 import jakarta.persistence.*;
 
-import javax.annotation.processing.Generated;
-
 @Entity
-@Table(name="app-user")
-public class User {
+@Table(name="app_user")
+public class AuthUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     public Long id;
     public String name;
     @Column(unique = true)
