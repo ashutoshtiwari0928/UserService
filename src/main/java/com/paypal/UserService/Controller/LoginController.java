@@ -20,7 +20,6 @@ public class LoginController {
     @PostMapping
     public ResponseEntity<?> loginRequest(@RequestBody LoginDTO login){
         try {
-            System.out.println(login.getEmail()+" "+login.getPassword());
             return ResponseEntity.ok(loginService.verify(login));
         }
         catch (UsernameNotFoundException e){
