@@ -48,11 +48,9 @@ public class JWTConfig {
     public boolean validateToken(String jws){
         String email = extractEmail(jws);
         String name = extractName(jws);
+        if(email==null || name==null)return false;
         String newJws = generate(new UserDTO(name,email));
-        if(jws.equals(newJws)){
-            return true;
-        }
-        else return false;
+        return jws.equals(newJws);
     }
 
 }
