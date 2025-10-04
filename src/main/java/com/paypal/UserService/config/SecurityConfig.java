@@ -2,6 +2,7 @@ package com.paypal.UserService.config;
 
 import com.paypal.UserService.Filters.JWTFilter;
 import com.paypal.UserService.Service.UserDetailServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,9 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,11 +23,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class SecurityConfig {
+@Slf4j
+public class SecurityConfig{
     @Autowired
     private UserDetailServiceImpl userDetailService;
     @Autowired
     private JWTFilter jwtFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
@@ -32,10 +37,16 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("api/users/**","/login").permitAll()
+                                .requestMatchers("/api/users/**",
+                                        "/login",
+                                        "/swagger-ui.html",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**",
+                                        "/docs"
+                                )
+                                .permitAll()
                                 .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(
                         sessiion ->
                                 sessiion
@@ -65,4 +76,5 @@ public class SecurityConfig {
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
 }
