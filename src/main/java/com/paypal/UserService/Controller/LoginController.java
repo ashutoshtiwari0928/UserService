@@ -3,6 +3,7 @@ package com.paypal.UserService.Controller;
 import com.paypal.UserService.DTO.LoginDTO;
 import com.paypal.UserService.DTO.UserDTO;
 import com.paypal.UserService.Service.LoginService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@Tag(name = "Login APIs")
 public class LoginController {
     @Autowired
     private LoginService loginService;

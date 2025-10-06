@@ -1,7 +1,9 @@
 package com.paypal.UserService.Service;
 
+import com.paypal.UserService.DTO.AuthDTO;
 import com.paypal.UserService.DTO.UserDTO;
 import com.paypal.UserService.Entity.AuthUser;
+import com.paypal.UserService.Entity.role;
 import com.paypal.UserService.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,10 +25,15 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public UserDTO createUser(AuthUser authUser) {
-        authUser.password = passwordEncoder.encode(authUser.password);
+    public UserDTO createUser(AuthDTO authDTO) {
+        AuthUser authUser = new AuthUser(
+                authDTO.getName(),
+                authDTO.getEmail(),
+                passwordEncoder.encode(authDTO.getPassword()),
+                role.valueOf(authDTO.getRole())
+        );
         userRepository.save(authUser);
-        return new UserDTO(authUser.name, authUser.email);
+        return new UserDTO(authUser.getName(), authUser.getEmail());
     }
 
     @Override

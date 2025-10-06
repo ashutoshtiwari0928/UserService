@@ -1,48 +1,33 @@
 package com.paypal.UserService.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import org.aspectj.lang.annotation.RequiredTypes;
 
 @Entity
 @Table(name="app_user")
+@Data
+@NoArgsConstructor
 public class AuthUser {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    public Long id;
-    public String name;
+    private Long id;
+    @NotNull
+    private  String name;
     @Column(unique = true)
-    public String email;
-    public String password;
+    @NotNull
+    private  String email;
+    @NotNull
+    private String password;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private role role;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setPassword(String password) {
+    public AuthUser(String name, String email,String password,  role role) {
         this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setName(String name) {
         this.name = name;
+        this.email = email;
+        this.role = role;
     }
 }

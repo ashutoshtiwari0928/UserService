@@ -3,9 +3,7 @@ package com.paypal.UserService.Service;
 import com.paypal.UserService.Entity.AuthUser;
 import com.paypal.UserService.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,8 +25,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if(user.isEmpty()){
             throw new UsernameNotFoundException("AuthUser Not found");
         }
-        return new User(user.get().getEmail(),
+        return new User(
+                user.get().getEmail(),
                 user.get().getPassword(),
-                AuthorityUtils.createAuthorityList("USER"));
+                List.of(new SimpleGrantedAuthority(user.get().getRole().toString()))
+        );
     }
 }

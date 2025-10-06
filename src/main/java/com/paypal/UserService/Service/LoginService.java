@@ -10,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,14 +29,23 @@ public class LoginService {
     @Autowired
     private JWTConfig jwtConfig;
     public String verify(LoginDTO login) {
+        Optional<AuthUser> authUser= userRepository.findByEmail(login.getEmail());
+        if(authUser.isEmpty())throw new UsernameNotFoundException("Invalid credentials");
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(login.getEmail()
-                        ,login.getPassword())
+                new UsernamePasswordAuthenticationToken(
+                        login.getEmail(),
+                        login.getPassword(),
+                        List.of(
+                                new SimpleGrantedAuthority(authUser.get().getRole().toString())
+                        )
+                )
         );
         if(authentication.isAuthenticated()){
-            Optional<AuthUser> user = userRepository.findByEmail(login.getEmail());
-            if(user.isEmpty())throw new UsernameNotFoundException("User Not found");
-            return jwtConfig.generate(new UserDTO(user.get().getName(),user.get().getEmail()));
+            return jwtConfig.generate(
+                    new UserDTO(authUser.get().getName(),
+                    authUser.get().getEmail()),
+                    authUser.get().getRole()
+            );
         }
         else throw new UsernameNotFoundException("Invalid credentials");
     }

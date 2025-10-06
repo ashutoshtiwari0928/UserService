@@ -1,5 +1,6 @@
 package com.paypal.UserService.Filters;
 
+import com.paypal.UserService.Entity.role;
 import com.paypal.UserService.Util.JWTConfig;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,7 +34,6 @@ public class JWTFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-
         if(authHeader!=null && authHeader.startsWith("Bearer ")){
             String token = authHeader.split(" ")[1];
             if(jwtConfig.validateToken(token)) {
